@@ -1,0 +1,4 @@
+{
+  "appService.defaultWebAppToDeploy": "/subscriptions/e9d37e16-dd67-45b0-bc53-ae64cbae738c/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/ilkkamtk-auth-server",
+  "appService.deploySubpath": "dist"
+}

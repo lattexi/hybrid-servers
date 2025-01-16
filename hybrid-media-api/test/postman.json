@@ -1,0 +1,242 @@
+{
+  "info": {
+    "name": "Hybrid Media API Tests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3002",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "mediaId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "tagId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "likeId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Media",
+      "item": [
+        {
+          "name": "Get Media List",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/media?page=1&limit=10",
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "limit", "value": "10"}
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Response has media array', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response.media).to.be.an('array');",
+                  "});",
+                  "pm.test('Media items have required fields', function() {",
+                  "    const response = pm.response.json();",
+                  "    if (response.media.length > 0) {",
+                  "        pm.expect(response.media[0]).to.have.all.keys('media_id', 'user_id', 'filename', 'filesize', 'media_type', 'title', 'description', 'created_at', 'thumbnail');",
+                  "    }",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Post Media",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/media",
+            "body": {
+              "mode": "raw",
+              "raw": {
+                "title": "Test Media",
+                "description": "Test Description",
+                "filename": "test.jpg",
+                "media_type": "image/jpeg",
+                "filesize": 12345
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Response has created media', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response.media).to.be.an('object');",
+                  "    pm.globals.set('mediaId', response.media.media_id);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Likes",
+      "item": [
+        {
+          "name": "Get All Likes",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/likes"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Response is array', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Post Like",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/likes",
+            "body": {
+              "mode": "raw",
+              "raw": {
+                "media_id": "{{mediaId}}"
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Like was added', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response.message).to.eql('Like added');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Tags",
+      "item": [
+        {
+          "name": "Get All Tags",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/tag"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Response is array', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Tag",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/tag",
+            "body": {
+              "mode": "raw",
+              "raw": {
+                "tag_name": "test_tag",
+                "media_id": "{{mediaId}}"
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Tag was created', function() {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response.message).to.eql('Tag added');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

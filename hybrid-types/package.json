@@ -1,0 +1,36 @@
+{
+  "name": "hybrid-types",
+  "version": "1.0.0",
+  "description": "Types for hybridisovellukset",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./*": {
+      "types": "./dist/*.d.ts",
+      "default": "./dist/*.js"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "dist/*"
+      ]
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "prepare": "npm run build"
+  },
+  "private": true,
+  "author": "Ilkka Kylmäniemi",
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
