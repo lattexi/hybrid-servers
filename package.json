@@ -1,0 +1,14 @@
+{
+  "name": "hybrid-servers",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start:media": "cd hybrid-media-api && npm run start",
+    "start:auth": "cd hybrid-auth-server && npm run start",
+    "start:upload": "cd hybrid-upload-server && npm run start",
+    "start": "concurrently \"npm run start:media\" \"npm run start:auth\" \"npm run start:upload\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
