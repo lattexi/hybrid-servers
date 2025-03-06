@@ -72,5 +72,6 @@ typings/
 # Serverless directories
 .serverless
 
+dist
 uploads
 public
