@@ -47,6 +47,7 @@ const likeListByUserIdGet = async (
       ? Number(req.params.id)
       : res.locals.user.user_id;
     const likes = await fetchLikesByUserId(user_id);
+    likes.reverse();
     res.json(likes);
   } catch (error) {
     next(error);

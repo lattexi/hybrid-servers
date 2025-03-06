@@ -19,6 +19,7 @@ const ratingListGet = async (
 ) => {
   try {
     const ratings = await fetchAllRatings();
+    ratings.reverse();
     res.json(ratings);
   } catch (error) {
     next(error);
