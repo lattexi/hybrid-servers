@@ -21,7 +21,7 @@ const mediaListGet = async (
   try {
     const {page, limit} = req.query;
     const media = await fetchAllMedia(Number(page), Number(limit));
-    media.reverse();
+    console.log(media);
     res.json(media);
   } catch (error) {
     next(error);

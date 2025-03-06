@@ -51,12 +51,14 @@ const fetchAllMedia = async (
   page: number | undefined = undefined,
   limit: number | undefined = undefined,
 ): Promise<MediaItem[]> => {
+  console.log('fetchAllMedia', page, limit);
   const offset = ((page || 1) - 1) * (limit || 10);
   const sql = `${BASE_MEDIA_QUERY}
+    ORDER BY created_at DESC
     ${limit ? 'LIMIT ? OFFSET ?' : ''}`;
+  console.log('sql', sql);
   const params = limit ? [uploadPath, limit, offset] : [uploadPath];
   const stmt = promisePool.format(sql, params);
-  console.log(stmt);
 
   const [rows] = await promisePool.execute<RowDataPacket[] & MediaItem[]>(stmt);
   return rows;

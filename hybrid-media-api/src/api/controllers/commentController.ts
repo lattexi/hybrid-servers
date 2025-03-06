@@ -20,7 +20,6 @@ const commentListGet = async (
 ) => {
   try {
     const comments = await fetchAllComments();
-    comments.reverse();
     res.json(comments);
   } catch (error) {
     next(error);

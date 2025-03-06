@@ -18,7 +18,6 @@ const tagListGet = async (
 ) => {
   try {
     const tags = await fetchAllTags();
-    tags.reverse();
     res.json(tags);
   } catch (error) {
     next(error);
