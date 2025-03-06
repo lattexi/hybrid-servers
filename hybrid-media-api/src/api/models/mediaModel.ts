@@ -197,7 +197,7 @@ const deleteMedia = async (
 };
 
 const fetchMediaByUserId = async (user_id: number): Promise<MediaItem[]> => {
-  const sql = `${BASE_MEDIA_QUERY} WHERE user_id = ?`;
+  const sql = `${BASE_MEDIA_QUERY} WHERE user_id = ? ORDER BY created_at DESC`;
   const params = [uploadPath, user_id];
   const stmt = promisePool.format(sql, params);
   console.log(stmt);
