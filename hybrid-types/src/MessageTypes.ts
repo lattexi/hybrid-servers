@@ -1,4 +1,4 @@
-import { MediaItem, UserWithNoPassword } from './DBTypes';
+import { MediaItem, UserWithNoPassword } from "./DBTypes";
 
 type MessageResponse = {
   message: string;
@@ -40,6 +40,10 @@ type UploadResponse = MessageResponse & {
   };
 };
 
+type MediaResponse = MessageResponse & {
+  media: MediaItem;
+};
+
 export type {
   MessageResponse,
   ErrorResponse,
@@ -49,4 +53,5 @@ export type {
   UserDeleteResponse,
   AvailableResponse,
   BooleanResponse,
+  MediaResponse,
 };

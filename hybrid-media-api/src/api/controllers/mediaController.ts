@@ -8,7 +8,7 @@ import {
   fetchMediaByUserId,
   putMedia,
 } from '../models/mediaModel';
-import {MessageResponse} from 'hybrid-types/MessageTypes';
+import {MediaResponse, MessageResponse} from 'hybrid-types/MessageTypes';
 import {MediaItem, TokenContent} from 'hybrid-types/DBTypes';
 import CustomError from '../../classes/CustomError';
 import {ERROR_MESSAGES} from '../../utils/errorMessages';
@@ -44,14 +44,14 @@ const mediaGet = async (
 
 const mediaPost = async (
   req: Request<{}, {}, Omit<MediaItem, 'media_id' | 'created_at'>>,
-  res: Response<MessageResponse, {user: TokenContent}>,
+  res: Response<MediaResponse>,
   next: NextFunction,
 ) => {
   try {
     // add user_id to media object from token
     req.body.user_id = res.locals.user.user_id;
-    await postMedia(req.body);
-    res.json({message: 'Media created'});
+    const mediaItem = await postMedia(req.body);
+    res.json({message: 'Media created', media: mediaItem});
   } catch (error) {
     next(error);
   }

@@ -14,7 +14,8 @@
     "start:media": "cd hybrid-media-api && npm run start",
     "start:auth": "cd hybrid-auth-server && npm run start",
     "start:upload": "cd hybrid-upload-server && npm run start",
-    "start": "concurrently \"npm run start:media\" \"npm run start:auth\" \"npm run start:upload\""
+    "start": "concurrently \"npm run start:media\" \"npm run start:auth\" \"npm run start:upload\"",
+    "install": "concurrently \"cd hybrid-media-api && npm install\" \"cd hybrid-auth-server && npm install\" \"cd hybrid-upload-server && npm install\""
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
