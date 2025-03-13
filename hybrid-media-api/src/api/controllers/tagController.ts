@@ -69,9 +69,6 @@ const tagDelete = async (
   next: NextFunction,
 ) => {
   try {
-    if (res.locals.user.level_name !== 'Admin') {
-      throw new CustomError('Not authorized', 401);
-    }
     const result = await deleteTag(Number(req.params.id));
     res.json(result);
   } catch (error) {
