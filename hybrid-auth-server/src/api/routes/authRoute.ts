@@ -1,5 +1,5 @@
 import express from 'express';
-import {login} from '../controllers/authController';
+import {googleLogin, login} from '../controllers/authController';
 const router = express.Router();
 import {body} from 'express-validator';
 import {validationErrors} from '../../middlewares';
@@ -19,5 +19,7 @@ router.post(
   validationErrors,
   login,
 );
+
+router.post('/google', body('token'), validationErrors, googleLogin);
 
 export default router;
