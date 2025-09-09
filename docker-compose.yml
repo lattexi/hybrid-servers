@@ -1,16 +1,5 @@
 version: "3.9"
 services:
-  app:
-    build: .
-    environment:
-      DB_HOST: host.docker.internal # katso Linux-ohje alla
-      DB_PORT: "3306"
-      DB_USER: root
-      DB_PASSWORD: password
-      DB_NAME: mediashare
-    # Linux: lisää seuraava rivi
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
   media:
     image: hybrid-servers:latest
     container_name: media
@@ -24,8 +13,19 @@ services:
   auth:
     image: hybrid-servers:latest
     container_name: auth
-    env_file:
-      - ./hybrid-auth-server/.env
+    environment:
+      NODE_ENV: development
+      DB_HOST: host.docker.internal # katso Linux-ohje alla
+      DB_PORT: "3306"
+      DB_USER: root
+      DB_PASSWORD: password
+      DB_NAME: mediashare
+      JWT_SECRET: mysecretkey
+      GOOGLE_CLIENT_ID: 633421249784-0ve27n5ta8v9sapimtbifj3r1ccoiipt.apps.googleusercontent.com
+    # Linux: lisää seuraava rivi
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
     command: ["node", "hybrid-auth-server/index.js"]
     ports:
       - "3001:3001"
