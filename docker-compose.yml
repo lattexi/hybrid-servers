@@ -1,7 +1,17 @@
 version: "3.9"
 services:
-  media:
+  app:
     build: .
+    environment:
+      DB_HOST: host.docker.internal # katso Linux-ohje alla
+      DB_PORT: "3306"
+      DB_USER: root
+      DB_PASSWORD: password
+      DB_NAME: mediashare
+    # Linux: lisää seuraava rivi
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+  media:
     image: hybrid-servers:latest
     container_name: media
     env_file:
