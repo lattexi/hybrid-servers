@@ -1,6 +1,8 @@
 version: "3.9"
 services:
   initdb:
+    container_name: initdb
+    build: .
     image: hybrid-servers:latest
     env_file: ./hybrid-auth-server/.env # missä DB-yhteys on
     command: ["sh", "-lc", "npm run migrate && npm run seed"]
