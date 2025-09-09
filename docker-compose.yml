@@ -1,0 +1,32 @@
+version: "3.9"
+services:
+  media:
+    build: .
+    image: hybrid-servers:latest
+    container_name: media
+    env_file:
+      - ./hybrid-media-api/.env
+    command: ["node", "hybrid-media-api/index.js"]
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+
+  auth:
+    image: hybrid-servers:latest
+    container_name: auth
+    env_file:
+      - ./hybrid-auth-server/.env
+    command: ["node", "hybrid-auth-server/index.js"]
+    ports:
+      - "3001:3001"
+    restart: unless-stopped
+
+  upload:
+    image: hybrid-servers:latest
+    container_name: upload
+    env_file:
+      - ./hybrid-upload-server/.env
+    command: ["node", "hybrid-upload-server/index.js"]
+    ports:
+      - "3002:3002"
+    restart: unless-stopped
