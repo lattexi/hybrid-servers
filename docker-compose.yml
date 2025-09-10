@@ -1,32 +1,69 @@
 version: "3.9"
+
 services:
+  db:
+    image: mysql:8.4
+    container_name: db
+    env_file:
+      - ./db/.env.docker
+    command:
+      [
+        "--character-set-server=utf8mb4",
+        "--collation-server=utf8mb4_0900_ai_ci",
+      ]
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./db/db.sql:/docker-entrypoint-initdb.d/10-init.sql:ro
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "mysqladmin ping -h localhost -u$$MYSQL_USER -p$$MYSQL_PASSWORD --silent",
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 10s
+    restart: unless-stopped
+
   media:
-    build: .
     image: hybrid-servers:latest
     container_name: media
     env_file:
-      - ./hybrid-media-api/.env
+      - ./hybrid-media-api/.env.docker
     command: ["node", "hybrid-media-api/index.js"]
     ports:
       - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
     restart: unless-stopped
 
   auth:
     image: hybrid-servers:latest
     container_name: auth
     env_file:
-      - ./hybrid-auth-server/.env
+      - ./hybrid-auth-server/.env.docker
     command: ["node", "hybrid-auth-server/index.js"]
     ports:
       - "3001:3001"
+    depends_on:
+      db:
+        condition: service_healthy
     restart: unless-stopped
 
   upload:
     image: hybrid-servers:latest
     container_name: upload
     env_file:
-      - ./hybrid-upload-server/.env
+      - ./hybrid-upload-server/.env.docker
     command: ["node", "hybrid-upload-server/index.js"]
     ports:
       - "3002:3002"
+    depends_on:
+      db:
+        condition: service_healthy
     restart: unless-stopped
+
+volumes:
+  db_data:
