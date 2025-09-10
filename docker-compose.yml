@@ -1,17 +1,7 @@
 version: "3.9"
 services:
-  initdb:
-    container_name: initdb
-    image: hybrid-servers:latest
-    # Linuxissa tämä rivi auttaa hostin MySQL-yhteyteen:
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    env_file: ./hybrid-auth-server/.env
-    working_dir: /usr/src/app/hybrid-auth-server # <-- TÄRKEÄ
-    command: ["sh", "-lc", "npm run migrate && npm run seed"]
-    restart: "no"
-
   media:
+    build: .
     image: hybrid-servers:latest
     container_name: media
     env_file:
@@ -24,9 +14,6 @@ services:
   auth:
     image: hybrid-servers:latest
     container_name: auth
-    depends_on:
-      initdb:
-        condition: service_completed_successfully
     env_file:
       - ./hybrid-auth-server/.env
     command: ["node", "hybrid-auth-server/index.js"]
