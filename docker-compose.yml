@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   db:
     image: mysql:8.4
@@ -34,6 +32,11 @@ services:
     command: ["node", "hybrid-media-api/index.js"]
     ports:
       - "3000:3000"
+    develop:
+      watch:
+        - path: ./hybrid-media-api
+          target: /app/hybrid-media-api
+          action: sync
     depends_on:
       db:
         condition: service_healthy
@@ -47,6 +50,11 @@ services:
     command: ["node", "hybrid-auth-server/index.js"]
     ports:
       - "3001:3001"
+    develop:
+      watch:
+        - path: ./hybrid-auth-server
+          target: /app/hybrid-auth-server
+          action: sync
     depends_on:
       db:
         condition: service_healthy
@@ -60,6 +68,11 @@ services:
     command: ["node", "hybrid-upload-server/index.js"]
     ports:
       - "3002:3002"
+    develop:
+      watch:
+        - path: ./hybrid-upload-server
+          target: /app/hybrid-upload-server
+          action: sync
     depends_on:
       db:
         condition: service_healthy
