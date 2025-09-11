@@ -1,0 +1,66 @@
+volumes:
+  db_data:
+
+services:
+  db:
+    image: mysql:8.4
+    container_name: db
+    env_file:
+      - ./db/.env.docker
+    command:
+      [
+        "--character-set-server=utf8mb4",
+        "--collation-server=utf8mb4_0900_ai_ci",
+      ]
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./db/db.sql:/docker-entrypoint-initdb.d/10-init.sql:ro
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "mysqladmin ping -h localhost -u$$MYSQL_USER -p$$MYSQL_PASSWORD --silent",
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 10s
+    restart: unless-stopped
+  media:
+    build:
+      context: .
+      target: dev
+    command: ["npm", "--prefix", "hybrid-media-api", "run", "dev"]
+    develop:
+      watch:
+        - path: ./hybrid-media-api
+          target: /app/hybrid-media-api
+          action: sync
+    ports:
+      - "3000:3000"
+
+  auth:
+    build:
+      context: .
+      target: dev
+    command: ["npm", "--prefix", "hybrid-auth-server", "run", "dev"]
+    develop:
+      watch:
+        - path: ./hybrid-auth-server
+          target: /app/hybrid-auth-server
+          action: sync
+    ports:
+      - "3001:3001"
+
+  upload:
+    build:
+      context: .
+      target: dev
+    command: ["npm", "--prefix", "hybrid-upload-server", "run", "dev"]
+    develop:
+      watch:
+        - path: ./hybrid-upload-server
+          target: /app/hybrid-upload-server
+          action: sync
+    ports:
+      - "3002:3002"
