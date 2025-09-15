@@ -1,0 +1,126 @@
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: db
+    env_file:
+      - ./db/.env.docker
+    command:
+      [
+        "--character-set-server=utf8mb4",
+        "--collation-server=utf8mb4_0900_ai_ci",
+      ]
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./db/db.sql:/docker-entrypoint-initdb.d/10-init.sql:ro
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "mysqladmin ping -h localhost -u$$MYSQL_USER -p$$MYSQL_PASSWORD --silent",
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 10s
+    restart: unless-stopped
+  hybrid-media-api:
+    build:
+      context: ./hybrid-media-api
+      target: dev
+    env_file:
+      - ./hybrid-media-api/.env.docker
+    ports:
+      - "3000:3000"
+    develop:
+      watch:
+        - path: ./hybrid-media-api/src
+          action: sync
+          target: /usr/local/app/src
+        - path: ./hybrid-media-api/package.json
+          action: rebuild
+    depends_on:
+      mysql:
+        condition: service_healthy
+    profiles: [""]
+
+  hybrid-media-api-prod:
+    build:
+      context: ./hybrid-media-api
+      target: final
+    env_file:
+      - ./hybrid-media-api/.env.docker
+    ports:
+      - "3000:3000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    profiles: ["prod"]
+
+  hybrid-auth-server:
+    build:
+      context: ./hybrid-auth-server
+      target: dev
+    env_file:
+      - ./hybrid-auth-server/.env.docker
+    ports:
+      - "3001:3001"
+    develop:
+      watch:
+        - path: ./hybrid-auth-server/src
+          action: sync
+          target: /usr/local/app/src
+        - path: ./hybrid-auth-server/package.json
+          action: rebuild
+    depends_on:
+      mysql:
+        condition: service_healthy
+    profiles: [""]
+
+  hybrid-auth-server-prod:
+    build:
+      context: ./hybrid-auth-server
+      target: final
+    env_file:
+      - ./hybrid-auth-server/.env.docker
+    ports:
+      - "3001:3001"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    profiles: ["prod"]
+
+  hybrid-upload-server:
+    build:
+      context: ./hybrid-upload-server
+      target: dev
+    env_file:
+      - ./hybrid-upload-server/.env.docker
+    ports:
+      - "3002:3002"
+    develop:
+      watch:
+        - path: ./hybrid-upload-server/src
+          action: sync
+          target: /usr/local/app/src
+        - path: ./hybrid-upload-server/package.json
+          action: rebuild
+    depends_on:
+      mysql:
+        condition: service_healthy
+    profiles: [""]
+
+  hybrid-upload-server-prod:
+    build:
+      context: ./hybrid-upload-server
+      target: final
+    env_file:
+      - ./hybrid-upload-server/.env.docker
+    ports:
+      - "3002:3002"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    profiles: ["prod"]
+
+volumes:
+  db_data:

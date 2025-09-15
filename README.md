@@ -1,11 +1,8 @@
 ## Docker harjoitus
 
-Olin aiemmalla kurssilla tehnyt hybrid palvelimista monorepo tyylisen oman repositorion, jota muokkasin ja joka oli helppo ajaa. Tein siihen docker harjoituksen, jossa on yksi Dockerimage kaikille palvelimille ja docker-compose jolla ajetaan kolme palvelinta ja tietokanta.
+Olin aiemmalla kurssilla tehnyt hybrid palvelimista monorepo tyylisen oman repositorion, jota muokkasin ja joka oli helppo ajaa. Tein siihen docker harjoituksen. Harjoitusta varten loin jokaiselle palvelimelle oman Dockerfilen jossa oli build, dev ja prod.
 
-Docker kontit sisältävät rakennuksen jälkeen node ympäristön, node_modules kansion ja rakennetun koodin dist kansiossa.
-
-Toteutin watch ominaisuuden hieman eri tavalla kuin esimerkissä
-![watch](watch.png)
+Käytin yhteistä docker compose tiedostoa, jossa määrittelin profiilit dev ja prod. Dev profiilissa palvelimet ajetaan npm run dev komennolla ja watch toimii. Prod profiilissa ajetaan build jonka jälkeen koodi ja node_modules kopioidaan erilliseen imageen, joka ajetaan node index.js komennolla.
 
 Totesin kokeilemalla, että expressissä vakiona palvelin pyörii osoitteessa 0.0.0.0 joten en joutunut muokkaamaan koodia ollenkaan, vaikka tehtävänannossa niin kehotettiin. Palvelimet keskustelevat dockerin sisäisessä verkossa osoitteilla kuten http://media:3000 ja ulospäin ne näkyvät docker composessa määritellyillä porteilla kuten localhost:3000.
 
